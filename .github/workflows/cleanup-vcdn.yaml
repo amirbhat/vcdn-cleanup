@@ -25,7 +25,7 @@ jobs:
           VM_PASS: ${{ secrets.VM_ROOT_PASSWORD }}
           FOLDER: ${{ github.event.inputs.folder_name }}
         run: |
-          SSH="sshpass -p '$VM_PASS' ssh -o StrictHostKeyChecking=no $VM_USER@$VM_IP"
+          SSH="sshpass -p '$VM_PASS' ssh $VM_USER@$VM_IP"
 
           if [ -z "$FOLDER" ]; then
             echo "📂 Available VCDN folders:"
