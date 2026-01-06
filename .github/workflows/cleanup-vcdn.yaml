@@ -18,7 +18,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/github_actions_vcdn
           chmod 600 ~/.ssh/github_actions_vcdn
-          ssh-keyscan -H x.x.x.x >> ~/.ssh/known_hosts
+          ssh-keyscan -H 172.20.10.7 >> ~/.ssh/known_hosts
 
       - name: List folders or count files
         env:
