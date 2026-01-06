@@ -16,7 +16,9 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/github_actions_vcdn
+          cat <<'EOF' > ~/.ssh/github_actions_vcdn
+${{ secrets.VM_SSH_KEY }}
+EOF
           chmod 600 ~/.ssh/github_actions_vcdn
           ssh-keyscan -H 172.20.10.7 >> ~/.ssh/known_hosts
 
@@ -45,5 +47,4 @@ jobs:
             fi
 
             echo '📊 Total files:'
-            find /otss/data/vcdn/$FOLDER -type f | wc -l
-          "
+            find /otss/data/vcdn/$FOLDER -type f | wc
