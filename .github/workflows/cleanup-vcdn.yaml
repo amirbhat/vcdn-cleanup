@@ -1,11 +1,12 @@
-name: VCDN Folder Check (SSH)
+name: VCDN Folder Check SSH
 
 on:
   workflow_dispatch:
     inputs:
       folder_name:
-        description: "Leave empty to list VCDN folders"
+        description: Leave empty to list VCDN folders
         required: false
+        default: ""
 
 jobs:
   vcdn-check:
@@ -14,21 +15,28 @@ jobs:
 
     steps:
       - name: Setup SSH key
+        shell: bash
         run: |
+          set -e
           mkdir -p ~/.ssh
-          cat <<'EOF' > ~/.ssh/github_actions_vcdn
+          chmod 700 ~/.ssh
+
+          cat > ~/.ssh/github_actions_vcdn <<'EOF'
 ${{ secrets.VM_SSH_KEY }}
 EOF
+
           chmod 600 ~/.ssh/github_actions_vcdn
           ssh-keyscan -H 172.20.10.7 >> ~/.ssh/known_hosts
 
       - name: List folders or count files
+        shell: bash
         env:
           VM_IP: 172.20.10.7
           VM_USER: root
           FOLDER: ${{ github.event.inputs.folder_name }}
         run: |
-          SSH="ssh -i ~/.ssh/github_actions_vcdn $VM_USER@$VM_IP"
+          set -e
+          SSH="ssh -i ~/.ssh/github_actions_vcdn ${VM_USER}@${VM_IP}"
 
           if [ -z "$FOLDER" ]; then
             echo "📂 Available VCDN folders:"
@@ -45,7 +53,6 @@ EOF
               echo '❌ Folder does not exist'
               exit 1
             fi
-
             echo '📊 Total files:'
             find /otss/data/vcdn/$FOLDER -type f | wc -l
           "
